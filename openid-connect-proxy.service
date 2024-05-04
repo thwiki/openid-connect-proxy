@@ -1,0 +1,27 @@
+[Unit]
+Description=openid-connect-proxy
+After=syslog.target network.target remote-fs.target nss-lookup.target
+
+[Service]
+Type=simple
+User=$(whoami)
+Group=$(whoami)
+
+PIDFile=/run/openid-connect-proxy.pid
+
+WorkingDirectory=$(pwd)
+ExecStart=$(pwd)/openid-connect-proxy --port 8000 --redirect '' --upstream ''
+
+Restart=on-failure
+RestartSec=10
+
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=openid-connect-proxy.service
+
+ExecStop=/bin/kill -s QUIT $MAINPID
+
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
